@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import styles from "./page.module.scss";
 import {
   Configuration,
   getDefaultConfiguration,
   getDefaultState,
 } from "@/lib/types/data";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useEffect, useState } from "react";
+import styles from "./page.module.scss";
 
 const Digit = ({
   value,
@@ -42,7 +42,7 @@ export default function LobbyDisplay() {
   const [seconds, setSeconds] = useState(0);
   const [lastChime, setLastChime] = useState(-1);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const res = await fetch("/api/state");
       const json = await res.json();
@@ -65,7 +65,7 @@ export default function LobbyDisplay() {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [lastChime]);
 
   useEffect(() => {
     queueMicrotask(async () => {
@@ -76,7 +76,7 @@ export default function LobbyDisplay() {
       await fetchData();
     }, 200);
     return () => clearInterval(poll);
-  }, [lastChime]);
+  }, [lastChime, fetchData]);
 
   return (
     <div className={styles.container}>

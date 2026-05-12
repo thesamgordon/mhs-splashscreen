@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
-import styles from "./page.module.scss";
 import { getDefaultConfiguration, getDefaultState } from "@/lib/types/data";
+import { useCallback, useEffect, useState } from "react";
+import styles from "./page.module.scss";
 
 export default function Dashboard() {
   const [customTime, setCustomTime] = useState(15);
@@ -15,7 +15,7 @@ export default function Dashboard() {
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [now, setNow] = useState(new Date());
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const res = await fetch("/api/state");
       const json = await res.json();
@@ -33,7 +33,7 @@ export default function Dashboard() {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [inputFocus, hasSetConfig]);
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -43,13 +43,12 @@ export default function Dashboard() {
     setInterval(() => {
       setNow(new Date());
     }, 500);
-
     const poll = setInterval(async () => {
       await fetchData();
     }, 500);
 
     return () => clearInterval(poll);
-  }, [hasSetConfig, inputFocus]);
+  }, [hasSetConfig, inputFocus, fetchData]);
 
   const updateState = (payload: object) => {
     fetch("/api/state", {
@@ -114,22 +113,21 @@ export default function Dashboard() {
 
           <span
             className={`${
-              isConnected
-                ? styles.connectionText
-                : styles.disconnectedText
+              isConnected ? styles.connectionText : styles.disconnectedText
             }`}
           >
-            {isConnected
-              ? "CONNECTED"
-              : "DISCONNECTED"}
+            {isConnected ? "CONNECTED" : "DISCONNECTED"}
           </span>
         </div>
       </div>
 
-      <div className={styles.wrapper} style={{
-        opacity: isConnected ? 1: 0.5,
-        pointerEvents: isConnected ? "unset" : "none"
-      }}>
+      <div
+        className={styles.wrapper}
+        style={{
+          opacity: isConnected ? 1 : 0.5,
+          pointerEvents: isConnected ? "unset" : "none",
+        }}
+      >
         <div className={styles.section}>
           <h3>Scene Control</h3>
           <div className={styles.grid}>
@@ -139,7 +137,24 @@ export default function Dashboard() {
                 updateState({ view: "splash", timerActive: false })
               }
             >
-              ACTIVATE SPLASH
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="#2b2b2b"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={styles.backIcon}
+              >
+                <path d="M5 22h14"></path>
+                <path d="M5 2h14"></path>
+                <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path>
+                <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path>
+              </svg>
+              <p>ACTIVATE SPLASH</p>
             </button>
             <button
               className={`${styles.btn} ${styles.warn} ${serverState.view == "live" ? styles.disabled : ""}`}
@@ -149,7 +164,28 @@ export default function Dashboard() {
                 })
               }
             >
-              GO LIVE
+              <svg
+                fill="#2b2b2b"
+                height="24px"
+                width="24px"
+                version="1.1"
+                id="Icons"
+                viewBox="0 0 32 32"
+                className={styles.backIcon}
+              >
+                <path
+                  d="M29.5,14.1c-0.3-0.2-0.7-0.2-1,0l-4.6,2.3C23.7,15,22.5,14,21,14H7c-1.7,0-3,1.3-3,3v6c0,1.7,1.3,3,3,3h5.1l-3,4.4
+	c-0.3,0.5-0.2,1.1,0.3,1.4c0.5,0.3,1.1,0.2,1.4-0.3l3.2-4.8l3.2,4.8c0.2,0.3,0.5,0.4,0.8,0.4c0.2,0,0.4-0.1,0.6-0.2
+	c0.5-0.3,0.6-0.9,0.3-1.4l-3-4.4H21c1.5,0,2.7-1,2.9-2.4l4.6,2.3C28.7,26,28.8,26,29,26c0.2,0,0.4-0.1,0.5-0.1
+	c0.3-0.2,0.5-0.5,0.5-0.9V15C30,14.7,29.8,14.3,29.5,14.1z"
+                />
+                <path
+                  d="M19,1c-2.1,0-3.9,1.1-5,2.7C12.9,2.1,11.1,1,9,1C5.7,1,3,3.7,3,7s2.7,6,6,6c2.1,0,3.9-1.1,5-2.7c1.1,1.6,2.9,2.7,5,2.7
+	c3.3,0,6-2.7,6-6S22.3,1,19,1z M9,9C7.9,9,7,8.1,7,7s0.9-2,2-2s2,0.9,2,2S10.1,9,9,9z M19,9c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2
+	S20.1,9,19,9z"
+                />
+              </svg>
+              <p>GO LIVE</p>
             </button>
             <button
               className={`${styles.btn} ${styles.warn}`}
@@ -162,9 +198,46 @@ export default function Dashboard() {
                 })
               }
             >
-              {serverState.view === "intermission"
-                ? "RESTART INTERMISSION"
-                : "START INTERMISSION"}
+              {serverState.view === "intermission" ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={styles.backIcon}
+                >
+                  <path d="M10 2h4"></path>
+                  <path d="M12 14v-4"></path>
+                  <path d="M4 13a8 8 0 0 1 8-7 8 8 0 1 1-5.3 14L4 17.6"></path>
+                  <path d="M9 17H4v5"></path>
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={styles.backIcon}
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 6v6l4 2"></path>
+                </svg>
+              )}
+              <p>
+                {serverState.view === "intermission"
+                  ? "RESTART INTERMISSION"
+                  : "START INTERMISSION"}
+              </p>
             </button>
             <button
               className={`${styles.btn} ${styles.warn} ${serverState.view != "intermission" || serverState.seconds <= 0 ? styles.disabled : ""}`}
@@ -177,7 +250,25 @@ export default function Dashboard() {
                 })
               }
             >
-              END INTERMISSION
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={styles.backIcon}
+              >
+                <path d="M10 2h4"></path>
+                <path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7"></path>
+                <path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2"></path>
+                <path d="m2 2 20 20"></path>
+                <path d="M12 12v-2"></path>
+              </svg>
+              <p>END INTERMISSION</p>
             </button>
           </div>
           <div className={styles.input}>
