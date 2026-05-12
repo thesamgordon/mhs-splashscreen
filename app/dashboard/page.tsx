@@ -69,7 +69,7 @@ export default function Dashboard() {
     return `${m}:${sec}`;
   };
 
-  const isConnected = now.getTime() - lastUpdated.getTime() < 1000;
+  const isConnected = now.getTime() - lastUpdated.getTime() < 2000;
 
   return (
     <div className={styles.fullWrapper}>
@@ -107,7 +107,9 @@ export default function Dashboard() {
                   : `${Math.floor((now.getTime() - lastUpdated.getTime()) / 1000)}s ago`}
               </span>
             ) : (
-              "CONNECTION STATUS"
+              <span className={styles.secondaryText}>
+                {"CONNECTION STATUS"}
+              </span>
             )}
           </span>
 
