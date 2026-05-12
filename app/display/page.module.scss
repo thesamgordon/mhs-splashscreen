@@ -15,20 +15,30 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    width: calc(100% - 130px);
+    height: 100%;
     position: absolute;
+    container-type: inline-size;
+    overflow: hidden;
+    padding: 0 120px;
 }
 
 .title {
-    font-size: 10rem;
+    font-size: clamp(11rem, var(--text-scalar, 15cqw), 15vw);
+
     font-weight: 900;
-    letter-spacing: -0.02em;
-    margin: 0;
-    color: var(--primary-color);
-    background: -webkit-linear-gradient(
-        var(--primary-color),
-        var(--gradient-color)
-    );
+    line-height: 0.9;
+    text-align: center;
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+    margin-top: 0px;
+
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+
+    background: linear-gradient(var(--primary-color), var(--gradient-color));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;

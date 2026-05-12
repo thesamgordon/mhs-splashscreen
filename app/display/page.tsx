@@ -42,6 +42,9 @@ export default function LobbyDisplay() {
   const [seconds, setSeconds] = useState(0);
   const [lastChime, setLastChime] = useState(-1);
 
+  const textLength = configuration.showName?.length || 1;
+  const scalar = Math.min(20, 120 / textLength);
+
   const fetchData = useCallback(async () => {
     try {
       const res = await fetch("/api/state");
@@ -106,7 +109,14 @@ export default function LobbyDisplay() {
             transition={{ duration: 1.2 }}
           >
             <AnimatePresence mode="popLayout" initial={false}>
-              <motion.h1 className={styles.title}>
+              <motion.h1
+                className={styles.title}
+                style={
+                  {
+                    "--text-scalar": `${scalar}cqw`,
+                  } as React.CSSProperties
+                }
+              >
                 {configuration.showName}
               </motion.h1>
               <motion.p
