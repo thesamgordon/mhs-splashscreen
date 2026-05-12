@@ -47,6 +47,21 @@ export default function LobbyDisplay() {
       const res = await fetch("/api/state");
       const json = await res.json();
       setData(json);
+      if (json.config) {
+        setConfiguration(json.config);
+        document.documentElement.style.setProperty(
+          "--primary-color",
+          json.config.primaryColor,
+        );
+        document.documentElement.style.setProperty(
+          "--secondary-color",
+          json.config.secondaryColor,
+        );
+        document.documentElement.style.setProperty(
+          "--gradient-color",
+          json.config.gradientColor,
+        );
+      }
       setSeconds(json.seconds);
 
       if (json.config) {
@@ -91,10 +106,7 @@ export default function LobbyDisplay() {
             transition={{ duration: 1.2 }}
           >
             <AnimatePresence mode="popLayout" initial={false}>
-              <motion.h1
-                className={styles.title}
-                style={{ color: configuration.primaryColor }}
-              >
+              <motion.h1 className={styles.title}>
                 {configuration.showName}
               </motion.h1>
               <motion.p
@@ -104,7 +116,6 @@ export default function LobbyDisplay() {
                 exit={{ y: "-20%", opacity: 0, filter: "blur(20px)" }}
                 transition={{ duration: 0.4, ease: [0.66, 0, 0.34, 1] }}
                 className={styles.label}
-                style={{ color: configuration.secondaryColor }}
               >
                 {configuration.splash}
               </motion.p>
@@ -128,14 +139,7 @@ export default function LobbyDisplay() {
                   exit={{ opacity: 0, filter: "blur(10px)" }}
                   transition={{ duration: 1.2 }}
                 >
-                  <h2
-                    className={styles.label}
-                    style={{
-                      color: configuration.secondaryColor,
-                    }}
-                  >
-                    INTERMISSION
-                  </h2>
+                  <h2 className={styles.label}>INTERMISSION</h2>
                   <div className={styles.clock}>
                     <div className={styles.minutesArea}>
                       {Math.floor(seconds / 60)
@@ -152,14 +156,14 @@ export default function LobbyDisplay() {
                         ))}
                     </div>
 
-                    <div
+                    <span
                       className={styles.separator}
                       style={{
                         color: configuration.primaryColor,
                       }}
                     >
                       :
-                    </div>
+                    </span>
 
                     <div className={styles.secondsArea}>
                       {(seconds % 60)
@@ -186,22 +190,8 @@ export default function LobbyDisplay() {
                   exit={{ opacity: 0, filter: "blur(10px)" }}
                   transition={{ duration: 1.2 }}
                 >
-                  <h2
-                    className={styles.label}
-                    style={{
-                      color: configuration.secondaryColor,
-                    }}
-                  >
-                    PLEASE TAKE YOUR SEATS
-                  </h2>
-                  <div
-                    className={styles.startingSoon}
-                    style={{
-                      color: configuration.primaryColor,
-                    }}
-                  >
-                    STARTING SOON
-                  </div>
+                  <h2 className={styles.label}>PLEASE TAKE YOUR SEATS</h2>
+                  <div className={styles.startingSoon}>STARTING SOON</div>
                 </motion.div>
               )}
             </AnimatePresence>

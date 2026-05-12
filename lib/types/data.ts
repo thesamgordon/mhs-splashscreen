@@ -1,4 +1,4 @@
-export type { State, Configuration };
+export type { Configuration, State };
 
 interface State {
   view: string;
@@ -10,6 +10,7 @@ interface Configuration {
   showName: string;
   intermissionLength: number;
   primaryColor: string;
+  gradientColor: string;
   secondaryColor: string;
   splash: string;
 }
@@ -24,6 +25,7 @@ export const getDefaultConfiguration = (): Configuration => ({
   showName: "",
   intermissionLength: 15,
   primaryColor: "transparent",
+  gradientColor: "transparent",
   secondaryColor: "transparent",
   splash: "",
 });

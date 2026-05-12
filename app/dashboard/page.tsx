@@ -335,6 +335,26 @@ export default function Dashboard() {
               />
             </div>
             <div className={styles.configItem}>
+              <label>Gradient Color</label>
+              <input
+                type="color"
+                value={configuration.gradientColor}
+                onFocus={() => setInputFocus(true)}
+                onBlur={() => setInputFocus(false)}
+                className={styles.colorInput}
+                onChange={(e) => {
+                  setConfiguration({
+                    ...configuration,
+                    gradientColor: e.target.value,
+                  });
+                  updateState({
+                    action: "updateConfig",
+                    value: { gradientColor: e.target.value },
+                  });
+                }}
+              />
+            </div>
+            <div className={styles.configItem}>
               <label>Secondary Color</label>
               <input
                 type="color"
