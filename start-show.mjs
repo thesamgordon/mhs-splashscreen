@@ -2,7 +2,6 @@ import { execSync, spawn } from "child_process";
 import env from "dotenv";
 import fs from "fs";
 import OBSWebSocket from "obs-websocket-js";
-import os from "os";
 import path from "path";
 
 env.config({
@@ -50,7 +49,7 @@ try {
   // This means port 80 is not in use, so we can proceed.
 }
 
-const hostname = os.hostname().split(".")[0].toLowerCase();
+const hostname = execSync("scutil --get LocalHostName").toString().trim();
 let dnsUrl = `http://${hostname}.local`;
 
 try {
